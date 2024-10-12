@@ -16,6 +16,7 @@ func main() {
 	fmt.Printf("docker: %+v\n", d)
 	fmt.Printf("result: %+v\n", r)
 
+	time.Sleep(30 * time.Second)
 	stopContainer(ctx, d, r.ContainerId)
 }
 
