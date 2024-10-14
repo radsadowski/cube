@@ -23,6 +23,14 @@ func (w *Worker) CollectStats() {
 	fmt.Println("collecting stats")
 }
 
+func (w *Worker) ListTasks() []task.Task {
+	tasks := []task.Task{}
+	for _, t := range w.Db {
+		tasks = append(tasks, *t)
+	}
+	return tasks
+}
+
 func (w *Worker) RunTask(ctx context.Context) task.DockerResult {
 	t := w.Queue.Dequeue()
 	if t == nil {

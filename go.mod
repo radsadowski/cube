@@ -10,6 +10,8 @@ require (
 	github.com/google/uuid v1.6.0
 )
 
+require github.com/go-chi/chi/v5 v5.1.0 // indirect
+
 require (
 	github.com/Microsoft/go-winio v0.4.14 // indirect
 	github.com/containerd/log v0.1.0 // indirect
