@@ -15,6 +15,21 @@ import (
 )
 
 func main() {
+	for {
+		s, err := worker.GetStats()
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println(s.MemTotalKb())
+		fmt.Println(s.MemAvailableKb())
+		fmt.Println(s.MemUsedPercent())
+
+		fmt.Println(s.DiskTotal())
+		fmt.Println(s.CpuUsage())
+
+		time.Sleep(1 * time.Second)
+	}
+
 	host := os.Getenv("CUBE_HOST")
 	port, _ := strconv.Atoi(os.Getenv("CUBE_PORT"))
 	fmt.Println("Starting Cube worker")
