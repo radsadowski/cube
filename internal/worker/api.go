@@ -35,10 +35,13 @@ func (a *api) initRouter() {
 	a.Router = chi.NewRouter()
 	a.Router.Route("/tasks", func(r chi.Router) {
 		r.Post("/", a.StartTaskHandler)
-		r.Get("/", a.ListTasks)
+		r.Get("/", a.ListTasksHandler)
 		r.Route("/{taskID}", func(r chi.Router) {
-			r.Delete("/", a.StopTask)
+			r.Delete("/", a.StopTaskHandler)
 		})
+	})
+	a.Router.Route("/metrics", func(r chi.Router) {
+		r.Get("/", a.GetStatsHandler)
 	})
 }
 
@@ -63,7 +66,7 @@ func (a *api) StartTaskHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (a *api) ListTasks(w http.ResponseWriter, r *http.Request) {
+func (a *api) ListTasksHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	if err := json.NewEncoder(w).Encode(a.Worker.ListTasks()); err != nil {
@@ -71,7 +74,7 @@ func (a *api) ListTasks(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (a *api) StopTask(w http.ResponseWriter, r *http.Request) {
+func (a *api) StopTaskHandler(w http.ResponseWriter, r *http.Request) {
 	taskID := chi.URLParam(r, "taskID")
 	if taskID == "" {
 		log.Printf("missing taskID")
@@ -96,4 +99,12 @@ func (a *api) StopTask(w http.ResponseWriter, r *http.Request) {
 	taskCopy.State = task.Completed
 	a.Worker.AddTask(taskCopy)
 	w.WriteHeader(http.StatusNoContent)
+}
+
+func (a *api) GetStatsHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(w).Encode(a.Worker.Stats); err != nil {
+		log.Printf("encoding stats: %v\n", err)
+	}
 }

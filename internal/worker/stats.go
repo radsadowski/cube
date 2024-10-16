@@ -10,10 +10,11 @@ import (
 )
 
 type Stats struct {
-	Memory *mem.VirtualMemoryStat
-	Disk   *disk.UsageStat
-	Cpu    *cpu.TimesStat
-	Load   *load.AvgStat
+	Memory    *mem.VirtualMemoryStat
+	Disk      *disk.UsageStat
+	Cpu       *cpu.TimesStat
+	Load      *load.AvgStat
+	TaskCount int
 }
 
 func GetStats() (*Stats, error) {
