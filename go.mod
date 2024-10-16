@@ -6,11 +6,21 @@ toolchain go1.22.8
 
 require (
 	github.com/docker/go-connections v0.5.0
+	github.com/go-chi/chi/v5 v5.1.0
 	github.com/golang-collections/collections v0.0.0-20130729185459-604e922904d3
 	github.com/google/uuid v1.6.0
+	github.com/shirou/gopsutil/v4 v4.24.9
 )
 
-require github.com/go-chi/chi/v5 v5.1.0 // indirect
+require (
+	github.com/ebitengine/purego v0.8.0 // indirect
+	github.com/go-ole/go-ole v1.2.6 // indirect
+	github.com/lufia/plan9stats v0.0.0-20211012122336-39d0f177ccd0 // indirect
+	github.com/power-devops/perfstat v0.0.0-20210106213030-5aafc221ea8c // indirect
+	github.com/tklauser/go-sysconf v0.3.12 // indirect
+	github.com/tklauser/numcpus v0.6.1 // indirect
+	github.com/yusufpapurcu/wmi v1.2.4 // indirect
+)
 
 require (
 	github.com/Microsoft/go-winio v0.4.14 // indirect
