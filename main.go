@@ -10,24 +10,51 @@ import (
 
 	"github.com/golang-collections/collections/queue"
 	"github.com/google/uuid"
+	"github.com/radekska/cube/internal/manager"
 	"github.com/radekska/cube/internal/task"
 	"github.com/radekska/cube/internal/worker"
 )
 
 func main() {
-	host := os.Getenv("CUBE_HOST")
-	port, _ := strconv.Atoi(os.Getenv("CUBE_PORT"))
+	workerHost := os.Getenv("CUBE_WORKER_HOST")
+	if workerHost == "" {
+		workerHost = "0.0.0.0"
+	}
+	workerPort, _ := strconv.Atoi(os.Getenv("CUBE_WORKER_PORT"))
+	if workerPort == 0 {
+		workerPort = 5555
+	}
+
+	managerHost := os.Getenv("CUBE_MANAGER_HOST")
+	if managerHost == "" {
+		managerHost = "0.0.0.0"
+	}
+	managerPort, _ := strconv.Atoi(os.Getenv("CUBE_MANAGER_PORT"))
+	if managerPort == 0 {
+		managerPort = 5556
+	}
+
+	// Start worker
 	fmt.Println("Starting Cube worker")
 	w := worker.Worker{
+		Name:  "worker-1",
 		Queue: *queue.New(),
 		Db:    make(map[uuid.UUID]*task.Task),
 	}
-
 	go w.CollectStats()
 
-	api := worker.NewAPI(host, port, &w)
+	workerAPI := worker.NewAPI(workerHost, workerPort, &w)
 	go runTasks(&w)
-	api.Start()
+	go workerAPI.Start()
+
+	// Start manager pointing at the worker
+	workerAddr := fmt.Sprintf("%s:%d", workerHost, workerPort)
+	fmt.Println("Starting Cube manager")
+	m := manager.New([]string{workerAddr})
+	go m.DoWork()
+
+	managerAPI := manager.NewAPI(managerHost, managerPort, m)
+	managerAPI.Start()
 }
 
 func runTasks(w *worker.Worker) {
