@@ -34,6 +34,7 @@ func (a *api) Start() {
 	http.ListenAndServe(addr, a.Router)
 }
 
+
 func (a *api) initRouter() {
 	a.Router = chi.NewRouter()
 	a.Router.Route("/tasks", func(r chi.Router) {
